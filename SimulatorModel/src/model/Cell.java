@@ -5,23 +5,58 @@
  */
 package model;
 
+import model.entities.Entity;
+
 /**
  *
  * @author gillesbraun
  */
 public class Cell {
-    private final int col, row;
+    private Entity entity = null;
 
-    public Cell(int col, int row) {
-        this.col = col;
-        this.row = row;
+    public Entity getEntity() {
+        return entity;
+    }
+    
+    public boolean hasEntity() {
+        return entity != null;
     }
 
-    public int getCol() {
-        return col;
+    public Coordinates doEntityStep(Cells cells, int row, int col) {
+        if (entity != null) {
+            Coordinates coords = entity.doStep(cells, row, col);
+            return coords;
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the entity and removes it from the cell
+     * @return Entity
+     */
+    public Entity takeEntity() {
+        Entity e = returnEntity(entity);
+        entity = null;
+        return e;
+    }
+    
+    /**
+     * Used for creating a copy of an entity
+     * @param e Entity to be returned as a copy
+     * @return Copy of Entity
+     */
+    private Entity returnEntity(Entity e) {
+        return e;
     }
 
-    public int getRow() {
-        return row;
+    @Override
+    public String toString() {
+        if(entity != null)
+            return "Entity: " + entity.toString();
+        return "";
+    }
+
+    public void setEntity(Entity entity) {
+        this.entity = entity;
     }
 }
