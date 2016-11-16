@@ -40,7 +40,7 @@ public class Cells {
     }
     
     public void setCell(Cell cell, int r, int c) {
-        cells[c % getCols()][r % getRows()] = cell;
+        cells[r % getRows()][c % getCols()] = cell;
     }
 
     @Override
@@ -58,8 +58,4 @@ public class Cells {
         ret = ret.substring(0, ret.length()-2);
         return ret.trim();
     }
-    
-    
-    
-    
 }
