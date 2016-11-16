@@ -31,16 +31,6 @@ public class Cell {
     }
     
     /**
-     * Returns the entity and removes it from the cell
-     * @return Entity
-     */
-    public Entity takeEntity() {
-        Entity e = returnEntity(entity);
-        entity = null;
-        return e;
-    }
-    
-    /**
      * Used for creating a copy of an entity
      * @param e Entity to be returned as a copy
      * @return Copy of Entity
