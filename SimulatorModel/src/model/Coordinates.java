@@ -13,8 +13,8 @@ public class Coordinates {
     private int row, col;
 
     public Coordinates(int row, int col) {
-        this.row = col;
-        this.col = row;
+        this.row = row;
+        this.col = col;
     }
 
     public int getRow() {

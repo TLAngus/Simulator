@@ -49,4 +49,14 @@ public class Cell {
     public void setEntity(Entity entity) {
         this.entity = entity;
     }
+
+    /**
+     * Returns the current entity, then sets it to null
+     * @return The entity of this cell
+     */
+    public Entity takeEntity() {
+        Entity e = returnEntity(entity);
+        entity = null;
+        return e;
+    }
 }

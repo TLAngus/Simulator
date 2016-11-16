@@ -5,7 +5,6 @@
  */
 package controller;
 
-import java.util.function.Consumer;
 import model.Cell;
 import model.Cells;
 import model.Coordinates;
@@ -37,7 +36,7 @@ public class Simulator {
                 Cell cell = readState.getCell(r, c);
                 if(cell != null && cell.hasEntity()) {
                     Coordinates newEntityPos = cell.doEntityStep(readState, r, c);
-                    Entity entity = cell.getEntity();
+                    Entity entity = cell.takeEntity();
                     Cell cell1 = new Cell();
                     cell1.setEntity(entity);
                     writeState.setCell(cell1, newEntityPos.getRow(), newEntityPos.getCol());

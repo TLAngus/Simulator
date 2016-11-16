@@ -25,11 +25,7 @@ public class Person extends Entity {
 
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
-        if(Math.random() >= 0.5) {
-            c++;
-        }
-        r++;
-        return new Coordinates(r, c);
+        return new Coordinates(r, c + 1);
     }
 
     @Override
