@@ -8,7 +8,10 @@ package view;
 import controller.Simulator;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import model.Cell;
+import model.entities.Entity;
+import model.entities.Person;
 
 /**
  *
@@ -19,21 +22,40 @@ public class DrawController {
         int rows = sim.getRows();
         int cols = sim.getCols();
         
+        double sideOfCell = Math.min(width / cols, height / rows);
+                
+        double xOffset = (width - sideOfCell * cols) / 2;
+        double yOffset = (height - sideOfCell * rows) / 2;
+        
         drawGrid(g, height, width, rows, cols);
         
         for(int row = 0; row < rows; row++) {
             for(int col = 0; col < cols; col++) {
                 Cell cell = sim.getCell(row, col);
-                cell.getEntity();
+                Entity e = cell.getEntity();
+                int xPos = (int)(xOffset + col * sideOfCell);
+                int yPos = (int)(yOffset + row * sideOfCell);
+                drawEntity(e, g, xPos, yPos, (int)sideOfCell);
             }
         }
     }
     
+    private static void drawEntity(Entity e, Graphics g, int x, int y, int sideOfCell) {
+        if(e instanceof Person) {
+            Person person = (Person)e;
+            Polygon polygon = new Polygon();
+            polygon.addPoint(x, y + sideOfCell);
+            polygon.addPoint(x + sideOfCell / 2, y + sideOfCell / 2);
+            polygon.addPoint(x + sideOfCell, y + sideOfCell);
+            g.setColor(Color.RED);
+            g.fillPolygon(polygon);
+            
+            g.fillOval(x + sideOfCell / 4, y + sideOfCell / 4, sideOfCell / 2, sideOfCell / 2);
+        }
+    }
+    
     private static void drawGrid(Graphics g, int height, int width, int rows, int cols) {
-        double xSideOfCell = (double)width / cols;
-        double ySideOfCell = (double)height / rows;
-        
-        double sideOfCell = Math.min(xSideOfCell, ySideOfCell);
+        double sideOfCell = Math.min(width / cols, height / rows);
                 
         double xOffset = (width - sideOfCell * cols) / 2;
         double yOffset = (height - sideOfCell * rows) / 2;
