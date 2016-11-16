@@ -25,8 +25,11 @@ public class Person extends Entity {
 
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
-        System.out.println("new coords for "+name+" "+(r+1)+","+c);
-        return new Coordinates(r+1, c);
+        if(Math.random() >= 0.5) {
+            c++;
+        }
+        r++;
+        return new Coordinates(r, c);
     }
 
     @Override

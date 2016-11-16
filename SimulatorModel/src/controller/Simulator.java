@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.util.function.Consumer;
 import model.Cell;
 import model.Cells;
 import model.Coordinates;
@@ -21,7 +22,6 @@ public class Simulator {
         writeState = new Cells(rows, cols);
         commit();
         readState = new Cells(rows, cols);
-        
     }
     
     private void commit() {
@@ -37,7 +37,7 @@ public class Simulator {
                 Cell cell = readState.getCell(r, c);
                 if(cell != null && cell.hasEntity()) {
                     Coordinates newEntityPos = cell.doEntityStep(readState, r, c);
-                    Entity entity = cell.takeEntity();
+                    Entity entity = cell.getEntity();
                     Cell cell1 = new Cell();
                     cell1.setEntity(entity);
                     writeState.setCell(cell1, newEntityPos.getRow(), newEntityPos.getCol());
@@ -47,6 +47,8 @@ public class Simulator {
         
         commit();
     }
+    
+    
     
     public void setEntity(Entity e, int r, int c) {
         Cell cell = readState.getCell(r, c);
@@ -62,5 +64,15 @@ public class Simulator {
         return readState.toString();
     }
     
-    
+    public int getRows() {
+        return readState.getRows();
+    }
+
+    public int getCols() {
+        return readState.getCols();
+    }
+
+    public Cell getCell(int r, int c) {
+        return readState.getCell(r, c);
+    }
 }
