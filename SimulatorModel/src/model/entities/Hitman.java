@@ -41,28 +41,30 @@ public class Hitman extends Entity {
                 c-=1;
                 System.out.println("up left");
             } else {
-                if(x == 0)
-                if(y > 0) { // straight down
-                    r+=2;
-                    System.out.println("staright down");
-                } else {
-                    r-=2;
-                    System.out.println("staright up");
+                if(x == 0) {
+                    if(y > 0) { // straight down
+                        r+=2;
+                        System.out.println("staright down");
+                    } else {
+                        r-=2;
+                        System.out.println("staright up");
+                    }
+                } 
+                
+                if(y == 0) {
+                    if(x > 0) { // straight right
+                        c+=2;
+                        System.out.println("staright right");
+                    } else {
+                        c-=2;
+                        System.out.println("staright left");
+                    }
                 }
                 
-                if(y == 0)
-                if(x > 0) { // straight right
-                    c+=2;
-                    System.out.println("staright right");
-                } else {
-                    c-=2;
-                    System.out.println("staright left");
-                }
-                
-            }
-            
-            System.out.printf("x: %d | y: %d\n", x, y);
-            
+            }            
+        }
+        if(cellsWithEntities.isEmpty()) {
+            return new Coordinates(r+2, c+2);
         }
         return new Coordinates(r, c);
     }
