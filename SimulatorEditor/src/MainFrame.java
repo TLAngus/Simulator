@@ -3,7 +3,6 @@ import controller.Simulator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import model.entities.Person;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -32,7 +31,6 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         drawPanel1.setSim(sim);
-        sim.setEntity(new Person("hallo"), 4, 4);
         t.start();
     }
 
