@@ -5,10 +5,14 @@
  */
 package controller;
 
+import java.util.List;
+import java.util.Map;
 import model.Cell;
 import model.Cells;
 import model.Coordinates;
 import model.entities.Entity;
+import model.entities.Hitman;
+import model.entities.Person;
 
 /**
  *
@@ -19,10 +23,20 @@ public class Simulator {
 
     public Simulator(int rows, int cols) {
         writeState = new Cells(rows, cols);
-        commit();
         readState = new Cells(rows, cols);
+        
+        setEntity(new Person("Person"), 4, 5);
+        setEntity(new Hitman(), 2, 3);
     }
-    
+
+    public Map<Coordinates, Cell> getCellsInRadius(int radius, int r, int c) {
+        return readState.getCellsInRadius(radius, r, c);
+    }
+
+    public Map<Coordinates, Cell> getCellsWithEntities(int radius, int r, int c) {
+        return readState.getCellsWithEntities(radius, r, c);
+    }
+        
     private void commit() {
         readState = writeState;
         writeState = new Cells(writeState.getRows(), writeState.getCols());
@@ -35,25 +49,23 @@ public class Simulator {
             for (int c = 0; c < cols; c++) {
                 Cell cell = readState.getCell(r, c);
                 if(cell != null && cell.hasEntity()) {
+                    // do step and save coordinates of new entity position
                     Coordinates newEntityPos = cell.doEntityStep(readState, r, c);
-                    Entity entity = cell.takeEntity();
-                    Cell cell1 = new Cell();
-                    cell1.setEntity(entity);
-                    writeState.setCell(cell1, newEntityPos.getRow(), newEntityPos.getCol());
+                    // duplicate entity for safety
+                    Entity entity = cell.getEntity().duplicate();
+                    
+                    Cell newCell = getCell(newEntityPos.getRow(), newEntityPos.getCol()).duplicate();
+                    newCell.setEntity(entity);
+                    writeState.setCell(newCell, newEntityPos.getRow(), newEntityPos.getCol());
                 }
             }
         }
         
         commit();
-    }
-    
-    
+    }    
     
     public void setEntity(Entity e, int r, int c) {
-        Cell cell = readState.getCell(r, c);
-        if(cell == null) {
-            cell = new Cell();
-        }
+        Cell cell = readState.getCell(r, c).duplicate();
         cell.setEntity(e);
         writeState.setCell(cell, r, c);
     }

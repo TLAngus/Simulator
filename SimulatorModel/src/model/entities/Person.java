@@ -32,5 +32,10 @@ public class Person extends Entity {
     public String toString() {
         return "Person: "+ name;
     }
+
+    @Override
+    public Entity duplicate() {
+        return new Person(name);
+    }
     
 }

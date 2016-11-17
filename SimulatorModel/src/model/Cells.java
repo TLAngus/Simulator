@@ -5,6 +5,13 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import model.entities.Entity;
+
 
 /**
  *
@@ -36,10 +43,25 @@ public class Cells {
     }
     
     public Cell getCell(int r, int c) {
+        do {
+            r+= getRows();
+        } while(r < 0);
+                
+        do {
+            c+= getCols();
+        } while(c < 0);
+        
         return cells[r % getRows()][c % getCols()];
     }
     
     public void setCell(Cell cell, int r, int c) {
+        do {
+            r+= getRows();
+        } while(r < 0);
+                
+        do {
+            c+= getCols();
+        } while(c < 0);
         cells[r % getRows()][c % getCols()] = cell;
     }
 
@@ -57,5 +79,36 @@ public class Cells {
         }
         ret = ret.substring(0, ret.length()-2);
         return ret.trim();
+    }
+
+    public Map<Coordinates, Cell> getCellsInRadius(int radius, int r, int c) {
+        HashMap<Coordinates, Cell> list = new HashMap<>();
+        
+        // dont look at every cell, only those where may be possible
+        int startR = r - radius;
+        int endR = r + radius;
+        
+        int startC = c - radius;
+        int endC = c + radius;
+        
+        for(int row = startR; row <= endR; row++) {
+            for(int col = startC; col <= endC; col++) {
+                if(Math.pow(col - c, 2) + Math.pow(row - r, 2) < Math.pow(radius, 2) && !(r == row && c == col)) {
+                    list.put(new Coordinates(row, col), getCell(row, col));
+                }
+            }
+        }
+        return list;
+    }
+    
+    public Map<Coordinates, Cell> getCellsWithEntities(int radius, int r, int c) {
+        Map<Coordinates, Cell> cells = getCellsInRadius(radius, r, c);
+        Map<Coordinates, Cell> withEntities = new HashMap<>();
+        for (Map.Entry<Coordinates, Cell> entry : cells.entrySet()) {
+            if(entry.getValue().hasEntity()) {
+                withEntities.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return withEntities;
     }
 }

@@ -18,6 +18,12 @@ public class Cell {
         return entity;
     }
     
+    public Cell duplicate() {
+        Cell cell = new Cell();
+        cell.setEntity(entity);
+        return cell;
+    }
+    
     public boolean hasEntity() {
         return entity != null;
     }
