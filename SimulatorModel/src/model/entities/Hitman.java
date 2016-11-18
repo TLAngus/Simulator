@@ -77,5 +77,10 @@ public class Hitman extends Entity {
     public Entity duplicate() {
         return new Hitman();
     }
+
+    @Override
+    public int getKillPriority() {
+        return 5;
+    }
     
 }

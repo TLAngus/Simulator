@@ -13,10 +13,23 @@ import model.Coordinates;
  * @author gillesbraun
  */
 public abstract class Entity {
+    
+    protected boolean isDead = false;
+    
+    public abstract int getKillPriority();
+    
     public abstract Entity duplicate();
     
     public abstract Coordinates doStep(Cells cells, int r, int c);
     
     @Override
     public abstract String toString();
+
+    public void setDead() {
+        isDead = true;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
 }

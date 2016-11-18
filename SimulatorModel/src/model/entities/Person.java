@@ -37,5 +37,10 @@ public class Person extends Entity {
     public Entity duplicate() {
         return new Person(name);
     }
+
+    @Override
+    public int getKillPriority() {
+        return 0;
+    }
     
 }

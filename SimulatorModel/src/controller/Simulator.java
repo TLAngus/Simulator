@@ -27,10 +27,10 @@ public class Simulator {
         readState = new Cells(rows, cols);
         
         setEntity(new Person("Person"), 4, 5);
-        setEntity(new Person("Person"), 4, 6);
+        setEntity(new Person("Person"), 9, 6);
         setEntity(new Person("Person"), 5, 8);
         setEntity(new Hitman(), 2, 3);
-        setEntity(new Hitman(), 7, 3);
+        setEntity(new Hitman(), 7, 8);
         setEntity(new Hitman(), 8, 4);
         commit();
     }
@@ -62,21 +62,36 @@ public class Simulator {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 Cell cell = readState.getCell(r, c);
-                if(cell != null && cell.hasEntity()) {
+                if(cell != null && cell.hasEntity() && !cell.getEntity().isDead()) {
                     // do step and save coordinates of new entity position
                     Coordinates newEntityPos = cell.doEntityStep(readState, r, c);
-                    // duplicate entity for safety
+                    // duplicate entity to destroy reference
                     Entity entity = cell.getEntity().duplicate();
                     
-                    Cell newCell = getCell(newEntityPos.row, newEntityPos.col).duplicate();
-                    newCell.setEntity(entity);
-                    writeState.setCell(newCell, newEntityPos.row, newEntityPos.col);
+                    moveEntity(entity, newEntityPos);
                 }
             }
         }
         
         commit();
-    }    
+    }
+    
+    private void moveEntity(Entity e, Coordinates newPos) {
+        Cell cell = getCell(newPos.row, newPos.col).duplicate();
+        
+        // get entity that is at the position where the new one is moved to
+        Entity entityBefore = cell.getEntity();
+        if(entityBefore != null) {
+            int before = entityBefore.getKillPriority();
+            int moveTo = e.getKillPriority();
+            if(moveTo > before) {
+                setEntity(e, newPos.row, newPos.col);
+            }
+            entityBefore.setDead();
+        } else {
+            setEntity(e, newPos.row, newPos.col);
+        }
+    }
     
     public void setEntity(Entity e, int r, int c) {
         Cell cell = readState.getCell(r, c).duplicate();
