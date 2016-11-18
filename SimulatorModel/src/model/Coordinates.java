@@ -10,21 +10,13 @@ package model;
  * @author gillesbraun
  */
 public class Coordinates {
-    private int row, col;
+    public final int row, col;
 
     public Coordinates(int row, int col) {
         this.row = row;
         this.col = col;
     }
-
-    public int getRow() {
-        return row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
+    
     @Override
     public String toString() {
         return row+", "+col;
