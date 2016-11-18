@@ -22,8 +22,8 @@ public class Hitman extends Entity {
         Map<Coordinates, Cell> cellsWithEntities = cells.getCellsWithEntities(VIEW_RADIUS, r, c);
         for (Map.Entry<Coordinates, Cell> entry : cellsWithEntities.entrySet()) {
             Coordinates coords = entry.getKey();
-            int x = coords.getCol() - c;
-            int y = coords.getRow() - r;
+            int x = coords.col - c;
+            int y = coords.row - r;
             if(x > 0 && y > 0) { // move down right
                 c+=1;
                 r+=1;

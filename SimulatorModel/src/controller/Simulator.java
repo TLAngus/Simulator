@@ -26,6 +26,7 @@ public class Simulator {
         readState = new Cells(rows, cols);
         
         setEntity(new Person("Person"), 4, 5);
+        setEntity(new Person("Person"), 2, 5);
         setEntity(new Hitman(), 2, 3);
     }
 
@@ -54,9 +55,9 @@ public class Simulator {
                     // duplicate entity for safety
                     Entity entity = cell.getEntity().duplicate();
                     
-                    Cell newCell = getCell(newEntityPos.getRow(), newEntityPos.getCol()).duplicate();
+                    Cell newCell = getCell(newEntityPos.row, newEntityPos.col).duplicate();
                     newCell.setEntity(entity);
-                    writeState.setCell(newCell, newEntityPos.getRow(), newEntityPos.getCol());
+                    writeState.setCell(newCell, newEntityPos.row, newEntityPos.col);
                 }
             }
         }
