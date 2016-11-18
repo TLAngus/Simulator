@@ -113,29 +113,14 @@ public class Cells {
     }
     
     public Tuple<Coordinates, Cell> getClosestCellWithEntity(int radius, Coordinates pos) {
-        Map<Coordinates, Cell> cellsWithEntities = getCellsWithEntities(radius, pos.row, pos.col);
-        Tuple<Coordinates, Cell> closest = null;
-        Double closestDistance = null;
-        for (Map.Entry<Coordinates, Cell> entry : cellsWithEntities.entrySet()) {
-            Coordinates currentPos = entry.getKey();
-            Cell currentCell = entry.getValue();
-            
-            // Calculate distance with pythagoras
-            int xDiff = Math.abs(pos.col - currentPos.col);
-            int yDiff = Math.abs(pos.row - currentPos.row);
-            double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-            if(closestDistance == null || distance < closestDistance) {
-                closestDistance = distance;
-                closest = new Tuple(currentPos, currentCell);
-            }
-        }
-        return closest;
+        return getClosestCellWithEntityNotOfType(radius, pos, null);
     }
     
     public Tuple<Coordinates, Cell> getClosestCellWithEntityNotOfType(int radius, Coordinates pos, Class excludeType) {
         Map<Coordinates, Cell> cellsWithEntities = getCellsWithEntities(radius, pos.row, pos.col);
         Tuple<Coordinates, Cell> closest = null;
         Double closestDistance = null;
+        
         for (Map.Entry<Coordinates, Cell> entry : cellsWithEntities.entrySet()) {
             Coordinates currentPos = entry.getKey();
             Cell currentCell = entry.getValue();
@@ -144,9 +129,15 @@ public class Cells {
             int xDiff = Math.abs(pos.col - currentPos.col);
             int yDiff = Math.abs(pos.row - currentPos.row);
             double distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-            if(!currentCell.getEntity().getClass().equals(excludeType) && (closestDistance == null || distance < closestDistance)) {
-                closestDistance = distance;
-                closest = new Tuple(currentPos, currentCell);
+            boolean isSameType = currentCell.getEntity().getClass().equals(excludeType);
+            if((closestDistance == null || distance < closestDistance)) {
+                // when excludetype is not set, ignore it.
+                // if it is set, set closest only if it is of a different type
+                if(!(excludeType != null && isSameType)) {
+                    closestDistance = distance;
+                    closest = new Tuple(currentPos, currentCell);
+                }
+            
             }
         }
         return closest;

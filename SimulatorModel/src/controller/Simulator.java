@@ -10,6 +10,7 @@ import java.util.Map;
 import model.Cell;
 import model.Cells;
 import model.Coordinates;
+import model.Tuple;
 import model.entities.Entity;
 import model.entities.Hitman;
 import model.entities.Person;
@@ -26,12 +27,20 @@ public class Simulator {
         readState = new Cells(rows, cols);
         
         setEntity(new Person("Person"), 4, 5);
-        setEntity(new Person("Person"), 2, 5);
+        setEntity(new Person("Person"), 4, 6);
         setEntity(new Person("Person"), 5, 8);
         setEntity(new Hitman(), 2, 3);
         setEntity(new Hitman(), 7, 3);
         setEntity(new Hitman(), 8, 4);
         commit();
+    }
+
+    public Tuple<Coordinates, Cell> getClosestCellWithEntity(int radius, Coordinates pos) {
+        return readState.getClosestCellWithEntity(radius, pos);
+    }
+
+    public Tuple<Coordinates, Cell> getClosestCellWithEntityNotOfType(int radius, Coordinates pos, Class excludeType) {
+        return readState.getClosestCellWithEntityNotOfType(radius, pos, excludeType);
     }
 
     public Map<Coordinates, Cell> getCellsInRadius(int radius, int r, int c) {
