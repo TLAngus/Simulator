@@ -9,6 +9,7 @@ import java.util.Map;
 import model.Cell;
 import model.Cells;
 import model.Coordinates;
+import model.Tuple;
 
 /**
  *
@@ -19,9 +20,14 @@ public class Hitman extends Entity {
 
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
-        Map<Coordinates, Cell> cellsWithEntities = cells.getCellsWithEntities(VIEW_RADIUS, r, c);
-        for (Map.Entry<Coordinates, Cell> entry : cellsWithEntities.entrySet()) {
-            Coordinates coords = entry.getKey();
+        Tuple<Coordinates, Cell> closestCellWithEntity = 
+                cells.getClosestCellWithEntityNotOfType(
+                        VIEW_RADIUS, 
+                        new Coordinates(r, c), 
+                        this.getClass());
+        
+        if (closestCellWithEntity != null) {
+            Coordinates coords = closestCellWithEntity.x;
             int x = coords.col - c;
             int y = coords.row - r;
             if(x > 0 && y > 0) { // move down right
@@ -55,8 +61,9 @@ public class Hitman extends Entity {
                 
             }            
         }
-        if(cellsWithEntities.isEmpty()) {
-            return new Coordinates(r+2, c+2);
+        else {
+            c+=2;
+            r+=2;
         }
         return new Coordinates(r, c);
     }

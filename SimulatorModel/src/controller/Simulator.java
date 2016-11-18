@@ -27,7 +27,11 @@ public class Simulator {
         
         setEntity(new Person("Person"), 4, 5);
         setEntity(new Person("Person"), 2, 5);
+        setEntity(new Person("Person"), 5, 8);
         setEntity(new Hitman(), 2, 3);
+        setEntity(new Hitman(), 7, 3);
+        setEntity(new Hitman(), 8, 4);
+        commit();
     }
 
     public Map<Coordinates, Cell> getCellsInRadius(int radius, int r, int c) {
