@@ -86,8 +86,8 @@ public class Simulator {
             int moveTo = e.getKillPriority();
             if(moveTo > before) {
                 setEntity(e, newPos.row, newPos.col);
+                entityBefore.setDead();
             }
-            entityBefore.setDead();
         } else {
             setEntity(e, newPos.row, newPos.col);
         }
