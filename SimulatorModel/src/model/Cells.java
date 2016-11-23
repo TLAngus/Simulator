@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author gillesbraun
  */
-public class Cells implements Iterable<Cell> {
+public class Cells implements Iterable<Tuple<Coordinates, Cell>> {
     
     private Cell[][] cells;
     
@@ -141,8 +141,8 @@ public class Cells implements Iterable<Cell> {
     }
     
     @Override
-    public Iterator<Cell> iterator() {
-        return new Iterator<Cell>() {
+    public Iterator<Tuple<Coordinates, Cell>> iterator() {
+        return new Iterator<Tuple<Coordinates, Cell>>() {
             private int r = 0, c = 0;
             
             @Override
@@ -157,8 +157,8 @@ public class Cells implements Iterable<Cell> {
             }
 
             @Override
-            public Cell next() {
-                return getCell(r, c);
+            public Tuple<Coordinates, Cell> next() {
+                return new Tuple(new Coordinates(r, c), getCell(r, c));
             }
         };
     }
