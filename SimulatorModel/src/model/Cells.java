@@ -6,6 +6,7 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -13,7 +14,7 @@ import java.util.Map;
  *
  * @author gillesbraun
  */
-public class Cells {
+public class Cells implements Iterable<Cell> {
     
     private Cell[][] cells;
     
@@ -137,5 +138,28 @@ public class Cells {
             }
         }
         return closest;
+    }
+    
+    @Override
+    public Iterator<Cell> iterator() {
+        return new Iterator<Cell>() {
+            private int r = 0, c = 0;
+            
+            @Override
+            public boolean hasNext() {
+                if(++c >= getCols()) {
+                    c = 0;
+                    if(++r >= getRows()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public Cell next() {
+                return getCell(r, c);
+            }
+        };
     }
 }
