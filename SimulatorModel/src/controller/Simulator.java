@@ -5,7 +5,13 @@
  */
 package controller;
 
-import java.util.List;
+import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 import model.Cell;
 import model.Cells;
@@ -34,7 +40,26 @@ public class Simulator {
         setEntity(new Hitman(), 8, 4);
         commit();
     }
-
+    
+    public void saveToFile(String file) throws IOException {
+        Gson gson = new Gson();
+        String json = gson.toJson(readState);
+        try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+            pw.print(json);
+        }
+    }
+    
+    public void loadFromFile(String file) throws FileNotFoundException, IOException {
+        String l = null, json = "";
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        while((l = br.readLine()) != null) {
+            json += l;
+        }
+        br.close();
+        Gson gson = new Gson();
+        readState = gson.fromJson(json, Cells.class);
+    }
+    
     public Tuple<Coordinates, Cell> getClosestCellWithEntity(int radius, Coordinates pos) {
         return readState.getClosestCellWithEntity(radius, pos);
     }
