@@ -2,7 +2,22 @@
 import controller.Simulator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.Preferences;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import model.Coordinates;
+import model.entities.Person;
+import view.DrawController;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,6 +31,17 @@ import javax.swing.Timer;
  */
 public class MainFrame extends javax.swing.JFrame {
     private Simulator sim = new Simulator(10, 15);
+    private Preferences prefs;
+    private Tools selectedTool = Tools.Move;
+    
+    
+    private enum Entities {
+        Hitman, Person
+    }
+    
+    private enum Tools {
+        Move, Delete, Add
+    }
     
     private Timer t = new Timer(1000, new ActionListener() {
         @Override
@@ -25,13 +51,50 @@ public class MainFrame extends javax.swing.JFrame {
         }
     });
     
+    private MouseAdapter drawPanelMouseEvents = new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            Coordinates c = DrawController.getCoordinatesForXY(e.getPoint());
+            switch(selectedTool) {
+                case Add:
+                    sim.addEntity(new Person(""), c);
+                    break;
+            }
+            drawPanel1.repaint();
+        }
+    };
+    
+    private ActionListener radioActionListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(toolDeleteRadio.isSelected()) {
+                selectedTool = Tools.Delete;
+            }
+            if(toolMoveRadio.isSelected()) {
+                selectedTool = Tools.Move;
+            }
+            if(toolPlaceRadio.isSelected()) {
+                selectedTool = Tools.Add;
+            }
+        }
+    };
+    
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
         drawPanel1.setSim(sim);
-        t.start();
+        setLocationByPlatform(true);
+        prefs = Preferences.userNodeForPackage(sim.getClass());
+        drawPanel1.addMouseListener(drawPanelMouseEvents);
+        toolDeleteRadio.addActionListener(radioActionListener);
+        toolMoveRadio.addActionListener(radioActionListener);
+        toolPlaceRadio.addActionListener(radioActionListener);
+    }
+    
+    private void showErrorDialog(String message, String title) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -43,34 +106,203 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        toolsButtonGroup = new javax.swing.ButtonGroup();
         drawPanel1 = new DrawPanel();
+        resetSimButton = new javax.swing.JButton();
+        startStopSimButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        toolMoveRadio = new javax.swing.JRadioButton();
+        toolDeleteRadio = new javax.swing.JRadioButton();
+        toolPlaceRadio = new javax.swing.JRadioButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        entityList = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        saveMenuItem = new javax.swing.JMenuItem();
+        loadMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        exitMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Simulator Editor");
 
         javax.swing.GroupLayout drawPanel1Layout = new javax.swing.GroupLayout(drawPanel1);
         drawPanel1.setLayout(drawPanel1Layout);
         drawPanel1Layout.setHorizontalGroup(
             drawPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 557, Short.MAX_VALUE)
         );
         drawPanel1Layout.setVerticalGroup(
             drawPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
+
+        resetSimButton.setText("Reset");
+        resetSimButton.setEnabled(false);
+
+        startStopSimButton.setText("Start");
+        startStopSimButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startStopSimButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Time controls");
+
+        jLabel2.setText("Tools");
+
+        toolsButtonGroup.add(toolMoveRadio);
+        toolMoveRadio.setSelected(true);
+        toolMoveRadio.setText("Move");
+
+        toolsButtonGroup.add(toolDeleteRadio);
+        toolDeleteRadio.setText("Delete");
+
+        toolsButtonGroup.add(toolPlaceRadio);
+        toolPlaceRadio.setText("Add Entity");
+
+        entityList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(entityList);
+
+        jLabel3.setText("Entities");
+
+        fileMenu.setText("File");
+
+        saveMenuItem.setText("Save ...");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveMenuItem);
+
+        loadMenuItem.setText("Load ...");
+        loadMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(loadMenuItem);
+        fileMenu.add(jSeparator1);
+
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitMenuItem);
+
+        menuBar.add(fileMenu);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(drawPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(startStopSimButton))
+                        .addGap(35, 35, 35))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(resetSimButton)
+                            .addComponent(jLabel2)
+                            .addComponent(toolMoveRadio)
+                            .addComponent(toolDeleteRadio)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(toolPlaceRadio))
+                        .addGap(18, 18, 18)))
+                .addComponent(drawPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(startStopSimButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resetSimButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toolMoveRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toolDeleteRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toolPlaceRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addContainerGap())
             .addComponent(drawPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void startStopSimButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStopSimButtonActionPerformed
+        if(t.isRunning()) {
+            t.stop();
+            startStopSimButton.setText("Start");
+        } else {        
+            t.start();
+            startStopSimButton.setText("Pause");
+        }
+    }//GEN-LAST:event_startStopSimButtonActionPerformed
+
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        String path = prefs.get("LAST_SAVE_DIR" , System.getProperty("user.home"));
+        JFileChooser fileChooser = new JFileChooser(new File(path));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files (*.json)", "*.json"));
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setMultiSelectionEnabled(false);
+        int ret = fileChooser.showDialog(this, "Save File");
+        if(ret == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = fileChooser.getSelectedFile();
+                String filepath = file.getAbsolutePath();
+                if( ! filepath.endsWith(".json")) {
+                    filepath += ".json";
+                }
+                sim.saveToFile(filepath);
+                prefs.put("LAST_SAVE_DIR", file.getPath());
+            } catch (IOException ex) {
+                showErrorDialog(ex.getLocalizedMessage(), "Error saving file");
+            }
+        }
+    }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void loadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMenuItemActionPerformed
+        String path = prefs.get("LAST_SAVE_DIR" , System.getProperty("user.home"));
+        JFileChooser fileChooser = new JFileChooser(new File(path));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files (*.json)", "*.json"));
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setMultiSelectionEnabled(false);
+        int ret = fileChooser.showDialog(this, "Load File");
+        if(ret == JFileChooser.APPROVE_OPTION) {
+            try {
+                sim.loadFromFile(fileChooser.getSelectedFile().getAbsolutePath());
+                drawPanel1.repaint();
+            } catch (IOException ex) {
+                showErrorDialog(ex.getMessage(), "Error loading file");
+            }
+        }
+    }//GEN-LAST:event_loadMenuItemActionPerformed
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        dispose();
+    }//GEN-LAST:event_exitMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -82,19 +314,8 @@ public class MainFrame extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -109,5 +330,22 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private DrawPanel drawPanel1;
+    private javax.swing.JList<String> entityList;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JMenuItem loadMenuItem;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JButton resetSimButton;
+    private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JButton startStopSimButton;
+    private javax.swing.JRadioButton toolDeleteRadio;
+    private javax.swing.JRadioButton toolMoveRadio;
+    private javax.swing.JRadioButton toolPlaceRadio;
+    private javax.swing.ButtonGroup toolsButtonGroup;
     // End of variables declaration//GEN-END:variables
 }

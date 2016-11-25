@@ -41,6 +41,10 @@ public class Simulator {
         commit();
     }
     
+    public void addEntity(Entity e, Coordinates c) {
+        getCell(c.row, c.col).setEntity(e);
+    }
+    
     public void saveToFile(String file) throws IOException {
         Gson gson = new Gson();
         String json = gson.toJson(readState);

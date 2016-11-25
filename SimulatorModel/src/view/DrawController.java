@@ -8,6 +8,7 @@ package view;
 import controller.Simulator;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.util.List;
 import java.util.Map;
@@ -22,17 +23,22 @@ import model.entities.Person;
  * @author gillesbraun
  */
 public class DrawController {
+    
+    private static int rows, cols, sideOfCell, xOffset, yOffset, width, height;
 
-    public static void draw(Simulator sim, Graphics g, int height, int width) {
-        int rows = sim.getRows();
-        int cols = sim.getCols();
+    public static void draw(Simulator sim, Graphics g, int pHeight, int pWidth) {
+        rows = sim.getRows();
+        cols = sim.getCols();
+        
+        width = pWidth;
+        height = pHeight;
 
-        double sideOfCell = Math.min(width / cols, height / rows);
+        sideOfCell = Math.min(width / cols, height / rows);
 
-        double xOffset = (width - sideOfCell * cols) / 2;
-        double yOffset = (height - sideOfCell * rows) / 2;
+        xOffset = (width - sideOfCell * cols) / 2;
+        yOffset = (height - sideOfCell * rows) / 2;
 
-        drawGrid(g, height, width, rows, cols);
+        drawGrid(g);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -40,7 +46,7 @@ public class DrawController {
                 Entity e = cell.getEntity();
                 int xPos = (int) (xOffset + col * sideOfCell);
                 int yPos = (int) (yOffset + row * sideOfCell);
-                drawEntity(e, g, xPos, yPos, (int) sideOfCell);
+                drawEntity(e, g, xPos, yPos);
                  //displays vision radius
                 /*if (e instanceof Hitman) {
                     Map<Coordinates, Cell> cellsInRadius = sim.getCellsWithEntities(4, row, col);
@@ -54,13 +60,19 @@ public class DrawController {
             }
         }
     }
+    
+    public static Coordinates getCoordinatesForXY(Point p)  {
+        int r = (p.y - yOffset) / sideOfCell;
+        int c = (p.x - xOffset) / sideOfCell;
+        return new Coordinates(r, c);
+    }
 
-    private static void highlightCell(Graphics g, int x, int y, int sideOfCell) {
+    private static void highlightCell(Graphics g, int x, int y) {
         g.setColor(Color.GREEN);
         g.drawRect(x, y, sideOfCell, sideOfCell);
     }
 
-    private static void drawEntity(Entity e, Graphics g, int x, int y, int sideOfCell) {
+    private static void drawEntity(Entity e, Graphics g, int x, int y) {
         if (e instanceof Person) {
             Person person = (Person) e;
             Polygon polygon = new Polygon();
@@ -80,11 +92,7 @@ public class DrawController {
         }
     }
 
-    private static void drawGrid(Graphics g, int height, int width, int rows, int cols) {
-        double sideOfCell = Math.min(width / cols, height / rows);
-
-        double xOffset = (width - sideOfCell * cols) / 2;
-        double yOffset = (height - sideOfCell * rows) / 2;
+    private static void drawGrid(Graphics g) {
 
         // Dont draw a grid when the distance between is too small
         if (sideOfCell < 5) {
