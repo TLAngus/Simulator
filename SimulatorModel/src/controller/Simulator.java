@@ -6,6 +6,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -18,6 +19,7 @@ import model.Cells;
 import model.Coordinates;
 import model.Tuple;
 import model.entities.Entity;
+import model.entities.EntityAdapter;
 import model.entities.Hitman;
 import model.entities.Person;
 
@@ -46,8 +48,11 @@ public class Simulator {
     }
     
     public void saveToFile(String file) throws IOException {
-        Gson gson = new Gson();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Entity.class, new EntityAdapter());
+        Gson gson = gsonBuilder.create();
         String json = gson.toJson(readState);
+        
         try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
             pw.print(json);
         }
@@ -60,7 +65,9 @@ public class Simulator {
             json += l;
         }
         br.close();
-        Gson gson = new Gson();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Entity.class, new EntityAdapter());
+        Gson gson = gsonBuilder.create();
         readState = gson.fromJson(json, Cells.class);
     }
     
