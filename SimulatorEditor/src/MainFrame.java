@@ -122,6 +122,9 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         saveMenuItem = new javax.swing.JMenuItem();
         loadMenuItem = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        saveRemoteMenuItem = new javax.swing.JMenuItem();
+        loadRemoteMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
 
@@ -185,6 +188,23 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         fileMenu.add(loadMenuItem);
+        fileMenu.add(jSeparator2);
+
+        saveRemoteMenuItem.setText("Save Remote ...");
+        saveRemoteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveRemoteMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveRemoteMenuItem);
+
+        loadRemoteMenuItem.setText("Load Remote ...");
+        loadRemoteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadRemoteMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(loadRemoteMenuItem);
         fileMenu.add(jSeparator1);
 
         exitMenuItem.setText("Exit");
@@ -264,8 +284,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
         String path = prefs.get("LAST_SAVE_DIR" , System.getProperty("user.home"));
         JFileChooser fileChooser = new JFileChooser(new File(path));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files (*.json)", "*.json"));
-        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files (*.json)", "json"));
         fileChooser.setMultiSelectionEnabled(false);
         int ret = fileChooser.showDialog(this, "Save File");
         if(ret == JFileChooser.APPROVE_OPTION) {
@@ -286,8 +305,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void loadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMenuItemActionPerformed
         String path = prefs.get("LAST_SAVE_DIR" , System.getProperty("user.home"));
         JFileChooser fileChooser = new JFileChooser(new File(path));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files (*.json)", "*.json"));
-        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files (*.json)", "json"));
         fileChooser.setMultiSelectionEnabled(false);
         int ret = fileChooser.showDialog(this, "Load File");
         if(ret == JFileChooser.APPROVE_OPTION) {
@@ -303,6 +321,14 @@ public class MainFrame extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         dispose();
     }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void saveRemoteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRemoteMenuItemActionPerformed
+        
+    }//GEN-LAST:event_saveRemoteMenuItemActionPerformed
+
+    private void loadRemoteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadRemoteMenuItemActionPerformed
+        
+    }//GEN-LAST:event_loadRemoteMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -338,10 +364,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuItem loadMenuItem;
+    private javax.swing.JMenuItem loadRemoteMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton resetSimButton;
     private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenuItem saveRemoteMenuItem;
     private javax.swing.JButton startStopSimButton;
     private javax.swing.JRadioButton toolDeleteRadio;
     private javax.swing.JRadioButton toolMoveRadio;
