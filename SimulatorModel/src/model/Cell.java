@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import model.entities.Entity;
 
 /**
@@ -12,57 +14,74 @@ import model.entities.Entity;
  * @author gillesbraun
  */
 public class Cell {
-    private Entity entity = null;
-
-    public Entity getEntity() {
-        return entity;
-    }
+    private ArrayList<Entity> entities = new ArrayList<>();
     
     public Cell duplicate() {
         Cell cell = new Cell();
-        cell.setEntity(entity);
+        cell.entities = entities;
         return cell;
     }
     
-    public boolean hasEntity() {
-        return entity != null;
+    public void removeEntitiesExcept(Entity e) {
+        entities = new ArrayList<>();
+        entities.add(e);
     }
 
-    public Coordinates doEntityStep(Cells cells, int row, int col) {
-        if (entity != null) {
-            Coordinates coords = entity.doStep(cells, row, col);
-            return coords;
+    public void doEntityStep(Cells cells, int row, int col) {
+        for (Entity e : entities) {
+            e.doStep(cells, row, col);
         }
-        return null;
     }
     
-    /**
-     * Used for creating a copy of an entity
-     * @param e Entity to be returned as a copy
-     * @return Copy of Entity
-     */
-    private Entity returnEntity(Entity e) {
-        return e;
+    public Entity getEntity() {
+        // returns the first entity or null
+        return entities.size() > 0 ? entities.get(0) : null;
+    }
+    
+    public boolean hasEntity() {
+        return entities.size() > 0 && entities.get(0) != null;
     }
 
     @Override
     public String toString() {
-        if(entity != null)
-            return "Entity: " + entity.toString();
+        if(hasEntity())
+            return "Entity: " + getEntity().toString();
         return "";
     }
 
-    public void setEntity(Entity entity) {
-        this.entity = entity;
+    public int size() {
+        return entities.size();
     }
 
-    /**
-     * Returns the current entity, then sets it to null
-     * @return The entity of this cell
-     */
-    public Entity takeEntity() {
-        Entity e = returnEntity(entity);
-        entity = null;
-        return e;
+    public boolean isEmpty() {
+        return entities.isEmpty();
+    }
+
+    public boolean contains(Object o) {
+        return entities.contains(o);
+    }
+
+    public int indexOf(Object o) {
+        return entities.indexOf(o);
+    }
+
+    public Entity get(int index) {
+        return entities.get(index);
+    }
+
+    public boolean add(Entity e) {
+        return entities.add(e);
+    }
+
+    public boolean remove(Object o) {
+        return entities.remove(o);
+    }
+
+    public void clear() {
+        entities.clear();
+    }
+
+    public Iterator<Entity> iterator() {
+        return entities.iterator();
     }
 }

@@ -47,7 +47,7 @@ public class MainFrame extends javax.swing.JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             sim.doSimulationCycle();
-            drawPanel1.repaint();
+            drawPanel.repaint();
         }
     });
     
@@ -60,7 +60,7 @@ public class MainFrame extends javax.swing.JFrame {
                     sim.addEntity(new Person(""), c);
                     break;
             }
-            drawPanel1.repaint();
+            drawPanel.repaint();
         }
     };
     
@@ -84,10 +84,10 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
-        drawPanel1.setSim(sim);
+        drawPanel.setSim(sim);
         setLocationByPlatform(true);
         prefs = Preferences.userNodeForPackage(sim.getClass());
-        drawPanel1.addMouseListener(drawPanelMouseEvents);
+        drawPanel.addMouseListener(drawPanelMouseEvents);
         toolDeleteRadio.addActionListener(radioActionListener);
         toolMoveRadio.addActionListener(radioActionListener);
         toolPlaceRadio.addActionListener(radioActionListener);
@@ -107,7 +107,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         toolsButtonGroup = new javax.swing.ButtonGroup();
-        drawPanel1 = new DrawPanel();
+        drawPanel = new DrawPanel();
         resetSimButton = new javax.swing.JButton();
         startStopSimButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -116,7 +116,7 @@ public class MainFrame extends javax.swing.JFrame {
         toolDeleteRadio = new javax.swing.JRadioButton();
         toolPlaceRadio = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        entityList = new javax.swing.JList<>();
+        entityList = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -131,14 +131,14 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulator Editor");
 
-        javax.swing.GroupLayout drawPanel1Layout = new javax.swing.GroupLayout(drawPanel1);
-        drawPanel1.setLayout(drawPanel1Layout);
-        drawPanel1Layout.setHorizontalGroup(
-            drawPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout drawPanelLayout = new javax.swing.GroupLayout(drawPanel);
+        drawPanel.setLayout(drawPanelLayout);
+        drawPanelLayout.setHorizontalGroup(
+            drawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 557, Short.MAX_VALUE)
         );
-        drawPanel1Layout.setVerticalGroup(
-            drawPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        drawPanelLayout.setVerticalGroup(
+            drawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
@@ -241,7 +241,7 @@ public class MainFrame extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(toolPlaceRadio))
                         .addGap(18, 18, 18)))
-                .addComponent(drawPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,7 +265,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(drawPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -311,7 +311,7 @@ public class MainFrame extends javax.swing.JFrame {
         if(ret == JFileChooser.APPROVE_OPTION) {
             try {
                 sim.loadFromFile(fileChooser.getSelectedFile().getAbsolutePath());
-                drawPanel1.repaint();
+                drawPanel.repaint();
             } catch (IOException ex) {
                 showErrorDialog(ex.getMessage(), "Error loading file");
             }
@@ -355,8 +355,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private DrawPanel drawPanel1;
-    private javax.swing.JList<String> entityList;
+    private DrawPanel drawPanel;
+    private javax.swing.JList entityList;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel jLabel1;

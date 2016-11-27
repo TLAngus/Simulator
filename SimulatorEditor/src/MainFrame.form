@@ -107,7 +107,7 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Component id="drawPanel1" max="32767" attributes="0"/>
+              <Component id="drawPanel" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -134,12 +134,12 @@
               <Component id="jScrollPane1" pref="159" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="drawPanel1" alignment="0" max="32767" attributes="0"/>
+          <Component id="drawPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="DrawPanel" name="drawPanel1">
+    <Container class="DrawPanel" name="drawPanel">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -215,7 +215,7 @@
             <Property name="selectionMode" type="int" value="0"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
           </AuxValues>
         </Component>
       </SubComponents>

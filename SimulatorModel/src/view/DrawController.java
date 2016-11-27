@@ -10,10 +10,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import model.Cell;
 import model.Coordinates;
+import model.Tuple;
 import model.entities.Entity;
 import model.entities.Hitman;
 import model.entities.Person;
@@ -23,13 +25,13 @@ import model.entities.Person;
  * @author gillesbraun
  */
 public class DrawController {
-    
+
     private static int rows, cols, sideOfCell, xOffset, yOffset, width, height;
 
     public static void draw(Simulator sim, Graphics g, int pHeight, int pWidth) {
         rows = sim.getRows();
         cols = sim.getCols();
-        
+
         width = pWidth;
         height = pHeight;
 
@@ -40,28 +42,24 @@ public class DrawController {
 
         drawGrid(g);
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                Cell cell = sim.getCell(row, col);
-                Entity e = cell.getEntity();
+        for (Iterator<Tuple<Coordinates, Cell>> iterator = sim.iterator();
+                iterator.hasNext();) {
+            
+            Tuple<Coordinates, Cell> next = iterator.next();
+            Cell cell = next.y;
+            int col = next.x.col;
+            int row = next.x.row;
+
+            if (cell.size() > 0) {
+                Entity e = cell.get(0);
                 int xPos = (int) (xOffset + col * sideOfCell);
                 int yPos = (int) (yOffset + row * sideOfCell);
                 drawEntity(e, g, xPos, yPos);
-                 //displays vision radius
-                /*if (e instanceof Hitman) {
-                    Map<Coordinates, Cell> cellsInRadius = sim.getCellsWithEntities(4, row, col);
-                    for (Map.Entry<Coordinates, Cell> entry : cellsInRadius.entrySet()) {
-                        highlightCell(g,
-                                (int) (xOffset + entry.getKey().getCol() * sideOfCell),
-                                (int) (yOffset + entry.getKey().getRow() * sideOfCell),
-                                (int) sideOfCell);
-                    }
-                }*/
             }
         }
     }
-    
-    public static Coordinates getCoordinatesForXY(Point p)  {
+
+    public static Coordinates getCoordinatesForXY(Point p) {
         int r = (p.y - yOffset) / sideOfCell;
         int c = (p.x - xOffset) / sideOfCell;
         return new Coordinates(r, c);

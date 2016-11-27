@@ -25,7 +25,7 @@ public class Person extends Entity {
 
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
-        return new Coordinates(r, c + 1);
+        return new Coordinates(r, c+1);
     }
 
     @Override

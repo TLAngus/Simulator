@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.Map;
 import model.Cell;
 import model.Cells;
@@ -34,17 +35,14 @@ public class Simulator {
         writeState = new Cells(rows, cols);
         readState = new Cells(rows, cols);
         
-        setEntity(new Person("Person"), 4, 5);
-        setEntity(new Person("Person"), 9, 6);
-        setEntity(new Person("Person"), 5, 8);
-        setEntity(new Hitman(), 2, 3);
-        setEntity(new Hitman(), 7, 8);
-        setEntity(new Hitman(), 8, 4);
+        setEntity(new Person("Person"), new Coordinates(5, 4));
+        setEntity(new Person("Person"), new Coordinates(5, 5));
+        setEntity(new Hitman(), new Coordinates(0, 2));
         commit();
     }
     
     public void addEntity(Entity e, Coordinates c) {
-        getCell(c.row, c.col).setEntity(e);
+        getCell(c).add(e);
     }
     
     public void saveToFile(String file) throws IOException {
@@ -90,49 +88,54 @@ public class Simulator {
     private void commit() {
         readState = writeState;
         writeState = new Cells(writeState.getRows(), writeState.getCols());
+        
+        for (Tuple<Coordinates, Cell> tuple : readState) {
+            Entity notToBeKilled = null;
+            for(Iterator<Entity> iterator = tuple.y.iterator(); iterator.hasNext();) {
+                Entity current = iterator.next();
+                // check if any entity should be killed.
+                if(notToBeKilled == null || notToBeKilled.getKillPriority() < current.getKillPriority()) {
+                    notToBeKilled = current;
+                }
+            }
+            tuple.y.removeEntitiesExcept(notToBeKilled);
+        }
+    }
+
+    public Iterator<Tuple<Coordinates, Cell>> iterator() {
+        return readState.iterator();
     }
         
     public void doSimulationCycle() {
         int cols = readState.getCols();
         int rows = readState.getRows();
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                Cell cell = readState.getCell(r, c);
-                if(cell != null && cell.hasEntity() && !cell.getEntity().isDead()) {
-                    // do step and save coordinates of new entity position
-                    Coordinates newEntityPos = cell.doEntityStep(readState, r, c);
-                    // duplicate entity to destroy reference
-                    Entity entity = cell.getEntity().duplicate();
-                    
-                    moveEntity(entity, newEntityPos);
+        
+        for (Tuple<Coordinates, Cell> tuple : readState) {
+            Coordinates coords = tuple.x;
+            
+            Cell cell = readState.getCell(coords);
+            for(Iterator<Entity> iterator = cell.iterator(); iterator.hasNext();) {
+                Entity curr = iterator.next();
+                if(curr != null) {
+                    Coordinates doStep = curr.doStep(readState, coords.row, coords.col);
+                    moveEntity(curr, doStep);
+                    //cell.remove(curr);
                 }
-            }
+            }                
         }
         
         commit();
     }
     
-    private void moveEntity(Entity e, Coordinates newPos) {
-        Cell cell = getCell(newPos.row, newPos.col).duplicate();
-        
-        // get entity that is at the position where the new one is moved to
-        Entity entityBefore = cell.getEntity();
-        if(entityBefore != null) {
-            int before = entityBefore.getKillPriority();
-            int moveTo = e.getKillPriority();
-            if(moveTo > before) {
-                setEntity(e, newPos.row, newPos.col);
-                entityBefore.setDead();
-            }
-        } else {
-            setEntity(e, newPos.row, newPos.col);
-        }
+    private void moveEntity(Entity e, Coordinates c) {
+        Cell cell = writeState.getCell(c);
+        cell.add(e);
     }
     
-    public void setEntity(Entity e, int r, int c) {
-        Cell cell = readState.getCell(r, c).duplicate();
-        cell.setEntity(e);
-        writeState.setCell(cell, r, c);
+    public void setEntity(Entity e, Coordinates c) {
+        Cell cell = readState.getCell(c).duplicate();
+        cell.add(e);
+        writeState.setCell(cell, c);
     }
 
     @Override
@@ -148,7 +151,7 @@ public class Simulator {
         return readState.getCols();
     }
 
-    public Cell getCell(int r, int c) {
-        return readState.getCell(r, c);
+    public Cell getCell(Coordinates c) {
+        return readState.getCell(c);
     }
 }
