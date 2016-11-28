@@ -45,11 +45,15 @@ public class Simulator {
         getCell(c).add(e);
     }
     
-    public void saveToFile(String file) throws IOException {
+    public String getJson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Entity.class, new EntityAdapter());
         Gson gson = gsonBuilder.create();
-        String json = gson.toJson(readState);
+        return gson.toJson(readState);
+    }
+    
+    public void saveToFile(String file) throws IOException {
+        String json = getJson();
         
         try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
             pw.print(json);
