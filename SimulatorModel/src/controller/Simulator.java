@@ -34,48 +34,43 @@ public class Simulator {
     public Simulator(int rows, int cols) {
         writeState = new Cells(rows, cols);
         readState = new Cells(rows, cols);
-        
-        setEntity(new Person("Person"), new Coordinates(5, 4));
-        setEntity(new Person("Person"), new Coordinates(5, 5));
-        setEntity(new Hitman(), new Coordinates(0, 2));
-        commit();
     }
-    
+
     public Simulator(Cells c) {
         readState = c;
         writeState = new Cells(c.getRows(), c.getCols());
     }
-    
+
     public static Simulator fromJson(String json) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Entity.class, new EntityAdapter());
         Gson gson = gsonBuilder.create();
         return new Simulator(gson.fromJson(json, Cells.class));
     }
-    
+
     public void addEntity(Entity e, Coordinates c) {
         getCell(c).add(e);
     }
-    
+
     public String getJson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Entity.class, new EntityAdapter());
         Gson gson = gsonBuilder.create();
         return gson.toJson(readState);
     }
-    
+
     public void saveToFile(String file) throws IOException {
         String json = getJson();
-        
+
         try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
             pw.print(json);
         }
     }
-    
+
     public void loadFromFile(String file) throws FileNotFoundException, IOException {
         String l = null, json = "";
         BufferedReader br = new BufferedReader(new FileReader(file));
-        while((l = br.readLine()) != null) {
+        while ((l = br.readLine()) != null) {
             json += l;
         }
         br.close();
@@ -84,7 +79,7 @@ public class Simulator {
         Gson gson = gsonBuilder.create();
         readState = gson.fromJson(json, Cells.class);
     }
-    
+
     public Tuple<Coordinates, Cell> getClosestCellWithEntity(int radius, Coordinates pos) {
         return readState.getClosestCellWithEntity(radius, pos);
     }
@@ -100,17 +95,17 @@ public class Simulator {
     public Map<Coordinates, Cell> getCellsWithEntities(int radius, int r, int c) {
         return readState.getCellsWithEntities(radius, r, c);
     }
-        
+
     private void commit() {
         readState = writeState;
         writeState = new Cells(writeState.getRows(), writeState.getCols());
-        
+
         for (Tuple<Coordinates, Cell> tuple : readState) {
             Entity notToBeKilled = null;
-            for(Iterator<Entity> iterator = tuple.y.iterator(); iterator.hasNext();) {
+            for (Iterator<Entity> iterator = tuple.y.iterator(); iterator.hasNext();) {
                 Entity current = iterator.next();
                 // check if any entity should be killed.
-                if(notToBeKilled == null || notToBeKilled.getKillPriority() < current.getKillPriority()) {
+                if (notToBeKilled == null || notToBeKilled.getKillPriority() < current.getKillPriority()) {
                     notToBeKilled = current;
                 }
             }
@@ -121,33 +116,33 @@ public class Simulator {
     public Iterator<Tuple<Coordinates, Cell>> iterator() {
         return readState.iterator();
     }
-        
+
     public void doSimulationCycle() {
         int cols = readState.getCols();
         int rows = readState.getRows();
-        
+
         for (Tuple<Coordinates, Cell> tuple : readState) {
             Coordinates coords = tuple.x;
-            
+
             Cell cell = readState.getCell(coords);
-            for(Iterator<Entity> iterator = cell.iterator(); iterator.hasNext();) {
+            for (Iterator<Entity> iterator = cell.iterator(); iterator.hasNext();) {
                 Entity curr = iterator.next();
-                if(curr != null) {
+                if (curr != null) {
                     Coordinates doStep = curr.doStep(readState, coords.row, coords.col);
                     moveEntity(curr, doStep);
                     //cell.remove(curr);
                 }
-            }                
+            }
         }
-        
+
         commit();
     }
-    
+
     private void moveEntity(Entity e, Coordinates c) {
         Cell cell = writeState.getCell(c);
         cell.add(e);
     }
-    
+
     public void setEntity(Entity e, Coordinates c) {
         Cell cell = readState.getCell(c).duplicate();
         cell.add(e);
@@ -158,7 +153,7 @@ public class Simulator {
     public String toString() {
         return readState.toString();
     }
-    
+
     public int getRows() {
         return readState.getRows();
     }
