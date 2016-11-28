@@ -1,4 +1,5 @@
 
+import controller.RemoteGames;
 import controller.Simulator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -34,6 +36,7 @@ public class MainFrame extends javax.swing.JFrame {
     private Preferences prefs;
     private Tools selectedTool = Tools.Move;
     
+    private HashMap<Integer, String> games = null;
     
     private enum Entities {
         Hitman, Person
@@ -91,12 +94,19 @@ public class MainFrame extends javax.swing.JFrame {
         toolDeleteRadio.addActionListener(radioActionListener);
         toolMoveRadio.addActionListener(radioActionListener);
         toolPlaceRadio.addActionListener(radioActionListener);
+        
     }
     
     private void showErrorDialog(String message, String title) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    private void updateSimulator(Simulator s) {
+        sim = s;
+        drawPanel.setSim(sim);
+        drawPanel.repaint();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -324,10 +334,27 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void saveRemoteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRemoteMenuItemActionPerformed
         
+        try {
+            RemoteGames.saveGametoRemote(sim);
+            JOptionPane.showMessageDialog(this, "Saving successful", "Simulator", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            showErrorDialog(ex.getMessage(), "Error saving");
+        }
     }//GEN-LAST:event_saveRemoteMenuItemActionPerformed
 
     private void loadRemoteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadRemoteMenuItemActionPerformed
-        
+        try {
+            games = RemoteGames.getGames();
+            LoadGameDialog dialog = new LoadGameDialog(this, true, games);
+            dialog.setVisible(true);
+            String selectedJson = dialog.getSelectedJson();
+            if(selectedJson != null) {
+                updateSimulator(Simulator.fromJson(selectedJson));
+                
+            }
+        } catch (Exception ex) {
+            showErrorDialog(ex.getMessage(), "Error loading");
+        }
     }//GEN-LAST:event_loadRemoteMenuItemActionPerformed
 
     /**
