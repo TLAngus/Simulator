@@ -41,6 +41,18 @@ public class Simulator {
         commit();
     }
     
+    public Simulator(Cells c) {
+        readState = c;
+        writeState = new Cells(c.getRows(), c.getCols());
+    }
+    
+    public static Simulator fromJson(String json) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Entity.class, new EntityAdapter());
+        Gson gson = gsonBuilder.create();
+        return new Simulator(gson.fromJson(json, Cells.class));
+    }
+    
     public void addEntity(Entity e, Coordinates c) {
         getCell(c).add(e);
     }
