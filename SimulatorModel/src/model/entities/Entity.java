@@ -14,8 +14,6 @@ import model.Coordinates;
  */
 public abstract class Entity {
     
-    protected boolean isDead = false;
-    
     public abstract int getKillPriority();
     
     public abstract Entity duplicate();
@@ -24,12 +22,4 @@ public abstract class Entity {
     
     @Override
     public abstract String toString();
-
-    public void setDead() {
-        isDead = true;
-    }
-
-    public boolean isDead() {
-        return isDead;
-    }
 }
