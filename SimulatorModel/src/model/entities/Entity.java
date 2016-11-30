@@ -19,7 +19,4 @@ public abstract class Entity {
     public abstract Entity duplicate();
     
     public abstract Coordinates doStep(Cells cells, int r, int c);
-    
-    @Override
-    public abstract String toString();
 }

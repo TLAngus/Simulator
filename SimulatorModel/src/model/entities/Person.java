@@ -18,12 +18,7 @@ public class Person extends Entity {
     public Coordinates doStep(Cells cells, int r, int c) {
         return new Coordinates(r, c+1);
     }
-
-    @Override
-    public String toString() {
-        return "Person";
-    }
-
+    
     @Override
     public Entity duplicate() {
         return new Person();

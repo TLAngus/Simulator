@@ -69,11 +69,6 @@ public class Hitman extends Entity {
     }
 
     @Override
-    public String toString() {
-        return "Hitman";
-    }
-
-    @Override
     public Entity duplicate() {
         return new Hitman();
     }
