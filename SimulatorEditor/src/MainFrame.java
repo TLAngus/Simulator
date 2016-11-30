@@ -57,7 +57,7 @@ public class MainFrame extends javax.swing.JFrame {
         Move, Delete, Add
     }
     
-    private Timer t = new Timer(1000, new ActionListener() {
+    private Timer t = new Timer(500, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             sim.doSimulationCycle();
@@ -154,6 +154,7 @@ public class MainFrame extends javax.swing.JFrame {
         // Fill Jlist with entities from enum
         entityList.setListData(Arrays.asList(EntityEnum.values()).toArray());
         entityList.setSelectedIndex(0);
+        delaySpinner.setValue(500);
     }
     
     private Entity getNewEntityFromSelection() {
@@ -202,6 +203,8 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         entityList = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
+        delaySpinner = new javax.swing.JSpinner();
+        jLabel4 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newGameMenuItem = new javax.swing.JMenuItem();
@@ -227,7 +230,7 @@ public class MainFrame extends javax.swing.JFrame {
         );
         drawPanelLayout.setVerticalGroup(
             drawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 512, Short.MAX_VALUE)
         );
 
         resetSimButton.setText("Reset");
@@ -263,6 +266,8 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(entityList);
 
         jLabel3.setText("Entities");
+
+        jLabel4.setText("Delay:");
 
         fileMenu.setText("File");
 
@@ -328,15 +333,18 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
                     .addComponent(startStopSimButton)
-                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(resetSimButton)
+                    .addComponent(jLabel3)
                     .addComponent(jLabel2)
                     .addComponent(toolDeleteRadio)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(toolMoveRadio)
-                    .addComponent(toolPlaceRadio))
+                    .addComponent(toolPlaceRadio)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                        .addComponent(delaySpinner, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -350,6 +358,10 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resetSimButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(delaySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(toolPlaceRadio)
@@ -360,7 +372,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
             .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -372,7 +384,8 @@ public class MainFrame extends javax.swing.JFrame {
         if(t.isRunning()) {
             t.stop();
             startStopSimButton.setText("Start");
-        } else {        
+        } else {
+            t.setDelay((int) delaySpinner.getValue());
             resetJson = sim.getJson();
             resetSimButton.setEnabled(true);
             t.start();
@@ -462,6 +475,7 @@ public class MainFrame extends javax.swing.JFrame {
         t.stop();
         updateSimulator(Simulator.fromJson(resetJson));
         resetSimButton.setEnabled(false);
+        startStopSimButton.setText("Start");
     }//GEN-LAST:event_resetSimButtonActionPerformed
 
     /**
@@ -489,6 +503,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner delaySpinner;
     private DrawPanel drawPanel;
     private javax.swing.JList entityList;
     private javax.swing.JMenuItem exitMenuItem;
@@ -496,6 +511,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
