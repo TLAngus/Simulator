@@ -102,9 +102,13 @@ public class MainFrame extends javax.swing.JFrame {
     private MouseMotionAdapter drawPanelMouseMotionAdapter = new MouseMotionAdapter() {
         @Override
         public void mouseDragged(MouseEvent e) {
-            if(pressedCoords != null && currentMovingEntity != null) {
-                DrawController.moveMovingEntity(e.getPoint());
-                drawPanel.repaint();
+            switch(selectedTool) {
+                case Move:
+                    if(pressedCoords != null && currentMovingEntity != null) {
+                        DrawController.moveMovingEntity(e.getPoint());
+                        drawPanel.repaint();
+                    }
+                    break;
             }
         }
     
