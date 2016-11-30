@@ -7,7 +7,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -16,8 +20,11 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Coordinates;
+import model.entities.Entity;
 import model.entities.Person;
 import view.DrawController;
 
@@ -34,15 +41,16 @@ import view.DrawController;
 public class MainFrame extends javax.swing.JFrame {
     private Simulator sim = new Simulator(10, 15);
     private Preferences prefs;
-    private Tools selectedTool = Tools.Move;
+    private Tool selectedTool = Tool.Move;
+    private EntityEnum selectedEntity = Arrays.asList(EntityEnum.values()).get(0);
     
     private HashMap<Integer, String> games = null;
     
-    private enum Entities {
+    private enum EntityEnum {
         Hitman, Person
     }
     
-    private enum Tools {
+    private enum Tool {
         Move, Delete, Add
     }
     
@@ -60,7 +68,7 @@ public class MainFrame extends javax.swing.JFrame {
             Coordinates c = DrawController.getCoordinatesForXY(e.getPoint());
             switch(selectedTool) {
                 case Add:
-                    sim.addEntity(new Person(""), c);
+                    sim.addEntity(getNewEntityFromSelection(), c);
                     break;
             }
             drawPanel.repaint();
@@ -71,14 +79,21 @@ public class MainFrame extends javax.swing.JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(toolDeleteRadio.isSelected()) {
-                selectedTool = Tools.Delete;
+                selectedTool = Tool.Delete;
             }
             if(toolMoveRadio.isSelected()) {
-                selectedTool = Tools.Move;
+                selectedTool = Tool.Move;
             }
             if(toolPlaceRadio.isSelected()) {
-                selectedTool = Tools.Add;
+                selectedTool = Tool.Add;
             }
+        }
+    };
+    
+    private ListSelectionListener entiySelectedListener = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            selectedEntity = (EntityEnum) entityList.getSelectedValue();
         }
     };
     
@@ -94,7 +109,23 @@ public class MainFrame extends javax.swing.JFrame {
         toolDeleteRadio.addActionListener(radioActionListener);
         toolMoveRadio.addActionListener(radioActionListener);
         toolPlaceRadio.addActionListener(radioActionListener);
-        
+        entityList.addListSelectionListener(entiySelectedListener);
+        // Fill Jlist with entities from enum
+        entityList.setListData(Arrays.asList(EntityEnum.values()).toArray());
+        entityList.setSelectedIndex(0);
+    }
+    
+    private Entity getNewEntityFromSelection() {
+        try {
+            Class<?> en = Class.forName("model.entities."+selectedEntity.toString());
+            List<Constructor<?>> consList = Arrays.asList(en.getConstructors());
+            Constructor<?> c = consList.get(0);
+            Entity e = (Entity) c.newInstance();
+            return e;
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     private void showErrorDialog(String message, String title) {
