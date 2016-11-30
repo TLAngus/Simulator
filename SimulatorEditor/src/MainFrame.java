@@ -386,8 +386,10 @@ public class MainFrame extends javax.swing.JFrame {
             startStopSimButton.setText("Start");
         } else {
             t.setDelay((int) delaySpinner.getValue());
-            resetJson = sim.getJson();
-            resetSimButton.setEnabled(true);
+            if(!resetSimButton.isEnabled()) {
+                resetJson = sim.getJson();
+                resetSimButton.setEnabled(true);
+            }
             t.start();
             startStopSimButton.setText("Pause");
         }
