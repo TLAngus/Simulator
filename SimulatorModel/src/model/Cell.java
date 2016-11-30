@@ -13,7 +13,7 @@ import model.entities.Entity;
  *
  * @author gillesbraun
  */
-public class Cell {
+public class Cell implements Iterable<Entity> {
     private ArrayList<Entity> entities = new ArrayList<>();
     
     public Cell duplicate() {

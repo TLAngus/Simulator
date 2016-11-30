@@ -101,15 +101,15 @@ public class Simulator {
         writeState = new Cells(writeState.getRows(), writeState.getCols());
 
         for (Tuple<Coordinates, Cell> tuple : readState) {
+            Cell cell = tuple.y;
             Entity notToBeKilled = null;
-            for (Iterator<Entity> iterator = tuple.y.iterator(); iterator.hasNext();) {
-                Entity current = iterator.next();
+            for (Entity current : cell) {
                 // check if any entity should be killed.
                 if (notToBeKilled == null || notToBeKilled.getKillPriority() < current.getKillPriority()) {
                     notToBeKilled = current;
                 }
             }
-            tuple.y.removeEntitiesExcept(notToBeKilled);
+            cell.removeEntitiesExcept(notToBeKilled);
         }
     }
 
@@ -118,15 +118,11 @@ public class Simulator {
     }
 
     public void doSimulationCycle() {
-        int cols = readState.getCols();
-        int rows = readState.getRows();
-
         for (Tuple<Coordinates, Cell> tuple : readState) {
             Coordinates coords = tuple.x;
-
-            Cell cell = readState.getCell(coords);
-            for (Iterator<Entity> iterator = cell.iterator(); iterator.hasNext();) {
-                Entity curr = iterator.next();
+            Cell cell = tuple.y;
+            
+            for (Entity curr : cell) {
                 if (curr != null) {
                     Coordinates doStep = curr.doStep(readState, coords.row, coords.col);
                     moveEntity(curr, doStep);
