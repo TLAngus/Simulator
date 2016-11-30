@@ -23,6 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import model.Cell;
 import model.Coordinates;
 import model.entities.Entity;
 import model.entities.Person;
@@ -63,12 +64,30 @@ public class MainFrame extends javax.swing.JFrame {
     });
     
     private MouseAdapter drawPanelMouseEvents = new MouseAdapter() {
+        private Coordinates pressedCoords = null;
         @Override
         public void mousePressed(MouseEvent e) {
-            Coordinates c = DrawController.getCoordinatesForXY(e.getPoint());
+            pressedCoords = DrawController.getCoordinatesForXY(e.getPoint());
             switch(selectedTool) {
                 case Add:
-                    sim.addEntity(getNewEntityFromSelection(), c);
+                    sim.addEntity(getNewEntityFromSelection(), pressedCoords);
+                    break;
+                case Delete:
+                    sim.getCell(pressedCoords).clear();
+                    break;
+                    
+            }
+            drawPanel.repaint();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            Coordinates releaseCoords = DrawController.getCoordinatesForXY(e.getPoint());
+            switch(selectedTool) {
+                case Move:
+                    if(pressedCoords != null && releaseCoords != null && !pressedCoords.equals(releaseCoords)) {
+                        sim.changeEntityPosition(pressedCoords, releaseCoords);
+                    }
                     break;
             }
             drawPanel.repaint();

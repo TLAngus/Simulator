@@ -133,6 +133,15 @@ public class Simulator {
 
         commit();
     }
+    
+    public void changeEntityPosition(Coordinates from, Coordinates to) {
+        Cell fromCell = getCell(from);
+        Cell toCell = getCell(to);
+        if(fromCell.hasEntity() && !toCell.hasEntity()) {
+            toCell.add(fromCell.getEntity());
+            fromCell.clear();
+        }
+    }
 
     private void moveEntity(Entity e, Coordinates c) {
         Cell cell = writeState.getCell(c);
