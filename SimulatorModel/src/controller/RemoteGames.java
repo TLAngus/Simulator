@@ -20,7 +20,7 @@ import java.util.HashMap;
  */
 public class RemoteGames {
 
-    private static final String server = "http://192.168.56.10/templ/simulator/index.php";
+    private static final String server = "http://lux-gaming.lu/~gillo/simulator/index.php";
 
     public static void saveGametoRemote(Simulator sim) throws Exception {
         String json = sim.getJson();
