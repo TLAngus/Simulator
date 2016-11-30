@@ -188,6 +188,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         toolsButtonGroup = new javax.swing.ButtonGroup();
+        jMenuItem1 = new javax.swing.JMenuItem();
         drawPanel = new DrawPanel();
         resetSimButton = new javax.swing.JButton();
         startStopSimButton = new javax.swing.JButton();
@@ -201,6 +202,8 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        newGameMenuItem = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
         saveMenuItem = new javax.swing.JMenuItem();
         loadMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -208,6 +211,8 @@ public class MainFrame extends javax.swing.JFrame {
         loadRemoteMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulator Editor");
@@ -254,6 +259,15 @@ public class MainFrame extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
+        newGameMenuItem.setText("New Game ...");
+        newGameMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newGameMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(newGameMenuItem);
+        fileMenu.add(jSeparator3);
+
         saveMenuItem.setText("Save ...");
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -271,7 +285,7 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu.add(loadMenuItem);
         fileMenu.add(jSeparator2);
 
-        saveRemoteMenuItem.setText("Save Remote ...");
+        saveRemoteMenuItem.setText("Save Remote");
         saveRemoteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveRemoteMenuItemActionPerformed(evt);
@@ -423,6 +437,18 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_loadRemoteMenuItemActionPerformed
 
+    private void newGameMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameMenuItemActionPerformed
+        NewGameDialog newGameDialog = new NewGameDialog(this, true);
+        newGameDialog.setLocationRelativeTo(this);
+        newGameDialog.setVisible(true);
+        Integer rows = newGameDialog.getRows();
+        Integer cols = newGameDialog.getCols();
+        if(rows != null && cols != null) {
+            t.stop();
+            updateSimulator(new Simulator(rows, cols));
+        }
+    }//GEN-LAST:event_newGameMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -455,12 +481,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JMenuItem loadMenuItem;
     private javax.swing.JMenuItem loadRemoteMenuItem;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem newGameMenuItem;
     private javax.swing.JButton resetSimButton;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenuItem saveRemoteMenuItem;
