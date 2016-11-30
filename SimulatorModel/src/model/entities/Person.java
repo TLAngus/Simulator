@@ -13,16 +13,7 @@ import model.Coordinates;
  * @author gillesbraun
  */
 public class Person extends Entity {
-    private String name;
-
-    public Person(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+    
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
         return new Coordinates(r, c+1);
@@ -30,12 +21,12 @@ public class Person extends Entity {
 
     @Override
     public String toString() {
-        return "Person: "+ name;
+        return "Person";
     }
 
     @Override
     public Entity duplicate() {
-        return new Person(name);
+        return new Person();
     }
 
     @Override
