@@ -45,6 +45,7 @@ public class MainFrame extends javax.swing.JFrame {
     private EntityEnum selectedEntity = Arrays.asList(EntityEnum.values()).get(0);
     private Coordinates pressedCoords = null;
     private Entity currentMovingEntity = null;
+    private String resetJson = null;
     
     private HashMap<Integer, String> games = null;
     
@@ -176,6 +177,7 @@ public class MainFrame extends javax.swing.JFrame {
         sim = s;
         drawPanel.setSim(sim);
         drawPanel.repaint();
+        resetSimButton.setEnabled(false);
     }
     
     /**
@@ -230,6 +232,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         resetSimButton.setText("Reset");
         resetSimButton.setEnabled(false);
+        resetSimButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetSimButtonActionPerformed(evt);
+            }
+        });
 
         startStopSimButton.setText("Start");
         startStopSimButton.addActionListener(new java.awt.event.ActionListener() {
@@ -366,6 +373,8 @@ public class MainFrame extends javax.swing.JFrame {
             t.stop();
             startStopSimButton.setText("Start");
         } else {        
+            resetJson = sim.getJson();
+            resetSimButton.setEnabled(true);
             t.start();
             startStopSimButton.setText("Pause");
         }
@@ -448,6 +457,12 @@ public class MainFrame extends javax.swing.JFrame {
             updateSimulator(new Simulator(rows, cols));
         }
     }//GEN-LAST:event_newGameMenuItemActionPerformed
+
+    private void resetSimButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSimButtonActionPerformed
+        t.stop();
+        updateSimulator(Simulator.fromJson(resetJson));
+        resetSimButton.setEnabled(false);
+    }//GEN-LAST:event_resetSimButtonActionPerformed
 
     /**
      * @param args the command line arguments
