@@ -27,6 +27,7 @@ import model.entities.Person;
 public class DrawController {
 
     private static int rows, cols, sideOfCell, xOffset, yOffset, width, height;
+    private static MovingEntity movingEntity;
 
     public static void draw(Simulator sim, Graphics g, int pHeight, int pWidth) {
         rows = sim.getRows();
@@ -57,6 +58,14 @@ public class DrawController {
                 drawEntity(e, g, xPos, yPos);
             }
         }
+        if(movingEntity != null) {
+           drawEntity(
+                   movingEntity.entity, 
+                   g, 
+                   movingEntity.position.x - movingEntity.mouseOffset.x, 
+                   movingEntity.position.y - movingEntity.mouseOffset.y,
+                   false);
+        }
     }
 
     public static Coordinates getCoordinatesForXY(Point p) {
@@ -71,22 +80,23 @@ public class DrawController {
     }
 
     private static void drawEntity(Entity e, Graphics g, int x, int y) {
+        drawEntity(e, g, x, y, true);
+    }
+    private static void drawEntity(Entity e, Graphics g, int x, int y, boolean hideIfMoving) {
+        g.setColor(Color.RED);
+        if(hideIfMoving && movingEntity != null && e == movingEntity.entity) {
+            return;
+        }
         if (e instanceof Person) {
-            Person person = (Person) e;
             Polygon polygon = new Polygon();
             polygon.addPoint(x, y + sideOfCell);
             polygon.addPoint(x + sideOfCell / 2, y + sideOfCell / 2);
             polygon.addPoint(x + sideOfCell, y + sideOfCell);
-            g.setColor(Color.RED);
             g.fillPolygon(polygon);
-
             g.fillOval(x + sideOfCell / 4, y + sideOfCell / 4, sideOfCell / 2, sideOfCell / 2);
         } else if (e instanceof Hitman) {
-            g.setColor(Color.red);
-            Hitman hitman = (Hitman) e;
             g.drawLine(x, y, x + sideOfCell, y + sideOfCell);
             g.drawLine(x, y + sideOfCell, x + sideOfCell, y);
-
         }
     }
 
@@ -106,5 +116,31 @@ public class DrawController {
             }
         }
 
+    }
+    
+    public static void startMovingEntity(Entity e, Point p) {
+        int yMouseDiff = (p.y - yOffset) % sideOfCell;
+        int xMouseDiff = (p.x - xOffset) % sideOfCell;
+        
+        movingEntity = new MovingEntity(e, new Point(xMouseDiff, yMouseDiff), p);
+    }
+    
+    public static void moveMovingEntity(Point newPosition) {
+        movingEntity.position = newPosition;
+    }
+    
+    public static void stopMovingEntity() {
+        movingEntity = null;
+    }
+    
+    private static class MovingEntity {
+        private Entity entity;
+        private Point mouseOffset, position;
+
+        public MovingEntity(Entity currentlyMoving, Point currentlyMovingOffset, Point currentlyMovingPos) {
+            this.entity = currentlyMoving;
+            this.mouseOffset = currentlyMovingOffset;
+            this.position = currentlyMovingPos;
+        }
     }
 }

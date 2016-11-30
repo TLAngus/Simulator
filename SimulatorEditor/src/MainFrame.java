@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -42,6 +43,8 @@ public class MainFrame extends javax.swing.JFrame {
     private Preferences prefs;
     private Tool selectedTool = Tool.Add;
     private EntityEnum selectedEntity = Arrays.asList(EntityEnum.values()).get(0);
+    private Coordinates pressedCoords = null;
+    private Entity currentMovingEntity = null;
     
     private HashMap<Integer, String> games = null;
     
@@ -62,7 +65,6 @@ public class MainFrame extends javax.swing.JFrame {
     });
     
     private MouseAdapter drawPanelMouseEvents = new MouseAdapter() {
-        private Coordinates pressedCoords = null;
         @Override
         public void mousePressed(MouseEvent e) {
             pressedCoords = DrawController.getCoordinatesForXY(e.getPoint());
@@ -73,7 +75,10 @@ public class MainFrame extends javax.swing.JFrame {
                 case Delete:
                     sim.getCell(pressedCoords).clear();
                     break;
-                    
+                case Move:
+                    currentMovingEntity = sim.getCell(pressedCoords).getEntity();
+                    DrawController.startMovingEntity(currentMovingEntity, e.getPoint());
+                    break;
             }
             drawPanel.repaint();
         }
@@ -85,11 +90,24 @@ public class MainFrame extends javax.swing.JFrame {
                 case Move:
                     if(pressedCoords != null && releaseCoords != null && !pressedCoords.equals(releaseCoords)) {
                         sim.changeEntityPosition(pressedCoords, releaseCoords);
+                        DrawController.stopMovingEntity();
                     }
                     break;
             }
+            pressedCoords = null;
             drawPanel.repaint();
         }
+    };
+    
+    private MouseMotionAdapter drawPanelMouseMotionAdapter = new MouseMotionAdapter() {
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if(pressedCoords != null && currentMovingEntity != null) {
+                DrawController.moveMovingEntity(e.getPoint());
+                drawPanel.repaint();
+            }
+        }
+    
     };
     
     private ActionListener radioActionListener = new ActionListener() {
@@ -123,6 +141,7 @@ public class MainFrame extends javax.swing.JFrame {
         setLocationByPlatform(true);
         prefs = Preferences.userNodeForPackage(sim.getClass());
         drawPanel.addMouseListener(drawPanelMouseEvents);
+        drawPanel.addMouseMotionListener(drawPanelMouseMotionAdapter);
         toolDeleteRadio.addActionListener(radioActionListener);
         toolMoveRadio.addActionListener(radioActionListener);
         toolPlaceRadio.addActionListener(radioActionListener);
