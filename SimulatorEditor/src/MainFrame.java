@@ -23,10 +23,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import model.Cell;
 import model.Coordinates;
 import model.entities.Entity;
-import model.entities.Person;
 import view.DrawController;
 
 /*
@@ -42,7 +40,7 @@ import view.DrawController;
 public class MainFrame extends javax.swing.JFrame {
     private Simulator sim = new Simulator(10, 15);
     private Preferences prefs;
-    private Tool selectedTool = Tool.Move;
+    private Tool selectedTool = Tool.Add;
     private EntityEnum selectedEntity = Arrays.asList(EntityEnum.values()).get(0);
     
     private HashMap<Integer, String> games = null;
@@ -217,13 +215,13 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel2.setText("Tools");
 
         toolsButtonGroup.add(toolMoveRadio);
-        toolMoveRadio.setSelected(true);
         toolMoveRadio.setText("Move");
 
         toolsButtonGroup.add(toolDeleteRadio);
         toolDeleteRadio.setText("Delete");
 
         toolsButtonGroup.add(toolPlaceRadio);
+        toolPlaceRadio.setSelected(true);
         toolPlaceRadio.setText("Add Entity");
 
         entityList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -286,21 +284,16 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(startStopSimButton))
-                        .addGap(35, 35, 35))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(resetSimButton)
-                            .addComponent(jLabel2)
-                            .addComponent(toolMoveRadio)
-                            .addComponent(toolDeleteRadio)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(toolPlaceRadio))
-                        .addGap(18, 18, 18)))
+                    .addComponent(jLabel1)
+                    .addComponent(startStopSimButton)
+                    .addComponent(jLabel3)
+                    .addComponent(resetSimButton)
+                    .addComponent(jLabel2)
+                    .addComponent(toolDeleteRadio)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(toolMoveRadio)
+                    .addComponent(toolPlaceRadio))
+                .addGap(18, 18, 18)
                 .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -315,15 +308,15 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(toolMoveRadio)
+                .addComponent(toolPlaceRadio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(toolDeleteRadio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(toolPlaceRadio)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toolMoveRadio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                 .addContainerGap())
             .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
