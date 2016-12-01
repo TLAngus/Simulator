@@ -31,30 +31,26 @@ public class Cells implements Iterable<Tuple<Coordinates, Cell>> {
     }
 
     public void setCell(Cell cell, Coordinates co) {
-        int r = co.row,
-                c = co.col;
-        do {
-            r += getRows();
-        } while (r < 0);
-
-        do {
-            c += getCols();
-        } while (c < 0);
-        cells[r % getRows()][c % getCols()] = cell;
+        co = normalizeCoordinates(co);
+        cells[co.row][co.col] = cell;
     }
 
     public Cell getCell(Coordinates co) {
+        co = normalizeCoordinates(co);
+        return cells[co.row][co.col];
+    }
+    
+    public Coordinates normalizeCoordinates(Coordinates co) {
         int r = co.row,
-                c = co.col;
-        do {
+            c = co.col;
+        while (r < 0) {
             r += getRows();
-        } while (r < 0);
+        } 
 
-        do {
+        while (c < 0) {
             c += getCols();
-        } while (c < 0);
-
-        return cells[r % getRows()][c % getCols()];
+        }
+        return new Coordinates(r % getRows(), c % getCols());
     }
 
     public Map<Coordinates, Cell> getCellsInRadius(int radius, int r, int c) {
@@ -71,7 +67,7 @@ public class Cells implements Iterable<Tuple<Coordinates, Cell>> {
             for (int col = startC; col <= endC; col++) {
                 if (Math.pow(col - c, 2) + Math.pow(row - r, 2) < Math.pow(radius, 2) && !(r == row && c == col)) {
                     Coordinates coordinates = new Coordinates(row, col);
-                    list.put(coordinates, getCell(coordinates));
+                    list.put(normalizeCoordinates(coordinates), getCell(coordinates));
                 }
             }
         }
