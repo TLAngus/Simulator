@@ -6,6 +6,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import model.entities.Entity;
 
@@ -46,7 +47,7 @@ public class Cell implements Iterable<Entity> {
     public String toString() {
         if(hasEntity())
             return "Entity: " + getEntity().toString();
-        return "";
+        return "no entity";
     }
 
     public int size() {
@@ -70,6 +71,7 @@ public class Cell implements Iterable<Entity> {
     }
 
     public boolean add(Entity e) {
+        entities.removeAll(Collections.singleton(null));
         return entities.add(e);
     }
 
