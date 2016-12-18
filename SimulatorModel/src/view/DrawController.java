@@ -29,6 +29,13 @@ public class DrawController {
     private static int rows, cols, sideOfCell, xOffset, yOffset, width, height;
     private static MovingEntity movingEntity;
 
+    /**
+     * Draw the game.
+     * @param sim Simulator instance to draw.
+     * @param g Graphics to draw onto.
+     * @param pHeight Height of Canvas
+     * @param pWidth Width of Canvas
+     */
     public static void draw(Simulator sim, Graphics g, int pHeight, int pWidth) {
         rows = sim.getRows();
         cols = sim.getCols();
@@ -68,20 +75,45 @@ public class DrawController {
         }
     }
 
+    /**
+     * Get Coordinates for a point on the canvas. draw() has to be called at least
+     * once before, else this will fail.
+     * @param p Point
+     * @return Coordinates
+     */
     public static Coordinates getCoordinatesForXY(Point p) {
         int r = (p.y - yOffset) / sideOfCell;
         int c = (p.x - xOffset) / sideOfCell;
         return new Coordinates(r, c);
     }
-
+    
     private static void highlightCell(Graphics g, int x, int y) {
         g.setColor(Color.GREEN);
         g.drawRect(x, y, sideOfCell, sideOfCell);
     }
 
+    /**
+     * Draw an entity on the canvas
+     * @param e Entity
+     * @param g Graphics
+     * @param x x Position on the canvas
+     * @param y y Position on the canvas
+     */
     private static void drawEntity(Entity e, Graphics g, int x, int y) {
         drawEntity(e, g, x, y, true);
     }
+    
+    /**
+     * Draws an entity only when hideIfMoving is set to TRUE. In the editor,
+     * when an entity is currently being moved, the original entity needs to be hidden.
+     * When an entity is about to be drawn and it is the original one being moved,
+     * it is hidden. Only the entity that the mouse drags needs to be shown.
+     * @param e Entity
+     * @param g Graphics
+     * @param x x pos
+     * @param y y pos
+     * @param hideIfMoving Defaults to true. If false, the entity is always drawn.
+     */
     private static void drawEntity(Entity e, Graphics g, int x, int y, boolean hideIfMoving) {
         g.setColor(Color.RED);
         if(hideIfMoving && movingEntity != null && e == movingEntity.entity) {
@@ -118,6 +150,11 @@ public class DrawController {
 
     }
     
+    /**
+     * "Pick up" an entity with the mouse to move it.
+     * @param e Entity
+     * @param p Point position of mouse.
+     */
     public static void startMovingEntity(Entity e, Point p) {
         int yMouseDiff = (p.y - yOffset) % sideOfCell;
         int xMouseDiff = (p.x - xOffset) % sideOfCell;
@@ -125,14 +162,24 @@ public class DrawController {
         movingEntity = new MovingEntity(e, new Point(xMouseDiff, yMouseDiff), p);
     }
     
+    /**
+     * Move the entity that is picked up by the mouse to another location.
+     * @param newPosition Point on canvas.
+     */
     public static void moveMovingEntity(Point newPosition) {
         movingEntity.position = newPosition;
     }
     
+    /**
+     * When the mouse is released.
+     */
     public static void stopMovingEntity() {
         movingEntity = null;
     }
     
+    /**
+     * Class for the entity that is being moved.
+     */
     private static class MovingEntity {
         private Entity entity;
         private Point mouseOffset, position;

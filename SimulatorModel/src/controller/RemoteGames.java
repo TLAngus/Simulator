@@ -15,18 +15,28 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
- *
+ * This class is used to fetch games from a remote server.
  * @author gillesbraun
  */
 public class RemoteGames {
 
     private static final String server = "http://lux-gaming.lu/~gillo/simulator/index.php";
 
+    /**
+     * Saves a Game on the remote server and gives it an ID automatically
+     * @param sim
+     * @throws Exception 
+     */
     public static void saveGametoRemote(Simulator sim) throws Exception {
         String json = sim.getJson();
         executePost(server, "game=" + URLEncoder.encode(json, "UTF-8"));
     }
 
+    /**
+     * Returns a list with all the games from the server in JSON
+     * @return
+     * @throws Exception 
+     */
     public static HashMap<Integer, String> getGames() throws Exception {
         String get = executeGet(server);
 

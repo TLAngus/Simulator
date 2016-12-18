@@ -12,12 +12,20 @@ import model.Coordinates;
 import model.Tuple;
 
 /**
- *
+ * Entity: Hitman, follows Person and tries to kill it.
  * @author gillesbraun
  */
 public class Hitman extends Entity {
     private static final int VIEW_RADIUS = 4;
 
+    /**
+     * Move in the direction of the nearest Person. When no person is present,
+     * Move diagonally down right.
+     * @param cells Cells used for getting other entities
+     * @param r Row
+     * @param c Col
+     * @return Coordinates of the new entity position.
+     */
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
         Tuple<Coordinates, Cell> closestCellWithEntity = 

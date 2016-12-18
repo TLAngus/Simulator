@@ -17,21 +17,13 @@ import model.entities.Entity;
 public class Cell implements Iterable<Entity> {
     private ArrayList<Entity> entities = new ArrayList<>();
     
-    public Cell duplicate() {
-        Cell cell = new Cell();
-        cell.entities = entities;
-        return cell;
-    }
-    
+    /**
+     * Removes all entities from this cell except the one passed as parameter.
+     * @param e 
+     */
     public void removeEntitiesExcept(Entity e) {
         entities = new ArrayList<>();
         entities.add(e);
-    }
-
-    public void doEntityStep(Cells cells, int row, int col) {
-        for (Entity e : entities) {
-            e.doStep(cells, row, col);
-        }
     }
     
     public Entity getEntity() {

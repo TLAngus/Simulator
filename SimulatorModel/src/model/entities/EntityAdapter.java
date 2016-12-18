@@ -16,7 +16,8 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 
 /**
- *
+ * Adapter used for converting the Simulator to JSON. Because Entity is abstract,
+ * this is needed to store the type in JSON. Fields of those classes are also Saved
  * @author gillesbraun
  */
 public class EntityAdapter implements JsonSerializer<Entity>, JsonDeserializer<Entity> {

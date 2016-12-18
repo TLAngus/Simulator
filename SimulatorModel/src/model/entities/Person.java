@@ -14,6 +14,13 @@ import model.Coordinates;
  */
 public class Person extends Entity {
     
+    /**
+     * Move one to the right each step.
+     * @param cells Not used
+     * @param r Row
+     * @param c Col
+     * @return new Coordinates
+     */
     @Override
     public Coordinates doStep(Cells cells, int r, int c) {
         return new Coordinates(r, c+1);
