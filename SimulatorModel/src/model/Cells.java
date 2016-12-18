@@ -163,7 +163,7 @@ public class Cells implements Iterable<Tuple<Coordinates, Cell>> {
     @Override
     public Iterator<Tuple<Coordinates, Cell>> iterator() {
         return new Iterator<Tuple<Coordinates, Cell>>() {
-            private int r = 0, c = 0;
+            private int r = 0, c = -1;
 
             @Override
             public boolean hasNext() {
